@@ -7,7 +7,6 @@
     "core:default",
     "opener:default",
     "dialog:default",
-    "fs:default",
     "core:window:default",
     "core:window:allow-start-dragging",
     "core:window:allow-hide",
@@ -24,7 +23,10 @@
       "allow": [
         { "path": "$RESOURCE/**/*" },
         { "path": "$APPDATA/**/*" },
-        { "path": "$HOME/**/*" }
+        { "path": "$AUDIO/**/*" },
+        { "path": "$HOME/Music/**/*" },
+        { "path": "$HOME/Downloads/**/*" },
+        { "path": "$HOME/Desktop/**/*" }
       ]
     }
   ]
