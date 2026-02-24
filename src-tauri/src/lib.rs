@@ -4,9 +4,17 @@ use tauri::{
     Manager,
 };
 
+/// Returns the current global cursor position in physical screen pixels.
+#[tauri::command]
+fn get_cursor_pos(window: tauri::WebviewWindow) -> Result<(f64, f64), String> {
+    let pos = window.cursor_position().map_err(|e| e.to_string())?;
+    Ok((pos.x, pos.y))
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
+        .invoke_handler(tauri::generate_handler![get_cursor_pos])
         .plugin(tauri_plugin_fs::init())
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_opener::init())

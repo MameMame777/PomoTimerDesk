@@ -9,7 +9,7 @@ import { useTimer } from "./hooks/useTimer";
 import "./styles/global.css";
 
 const TIMER_SIZE = { width: 160, height: 220 };
-const SETTINGS_SIZE = { width: 240, height: 300 };
+const SETTINGS_SIZE = { width: 240, height: 320 };
 
 export default function App() {
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -24,7 +24,10 @@ export default function App() {
   }, [settingsOpen]);
 
   return (
-    <div className={`app-container ${mode}`}>
+    <div
+      className={`app-container ${mode}`}
+      style={{ "--bg-opacity": settings.bgOpacity / 100 } as React.CSSProperties}
+    >
       <TitleBar
         onSettingsToggle={() => setSettingsOpen((v) => !v)}
         settingsOpen={settingsOpen}

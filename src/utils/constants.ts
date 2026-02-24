@@ -10,6 +10,7 @@ export interface AppSettings {
   soundSource: "default" | "custom";
   customSoundFolder: string | null;
   selectedSoundFile: string | null;
+  bgOpacity: number;
 }
 
 /** Default settings */
@@ -21,6 +22,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
   soundSource: "default",
   customSoundFolder: null,
   selectedSoundFile: null,
+  bgOpacity: 88,
 };
 
 /** Supported audio extensions */

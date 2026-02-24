@@ -167,6 +167,23 @@ export function Settings({ settings, onUpdate, onReset }: SettingsProps) {
         </button>
       </div>
 
+      {/* Background opacity */}
+      <div className="settings-section">
+        <label className="settings-label">
+          背景の透明度
+          <div className="settings-input-row">
+            <input
+              type="range"
+              min={10}
+              max={100}
+              value={settings.bgOpacity}
+              onChange={(e) => onUpdate({ bgOpacity: Number(e.target.value) })}
+            />
+            <span className="settings-value">{settings.bgOpacity}%</span>
+          </div>
+        </label>
+      </div>
+
       <div className="settings-footer">
         <button className="reset-btn" onClick={onReset}>
           初期値に戻す

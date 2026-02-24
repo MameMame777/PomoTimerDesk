@@ -28,6 +28,7 @@ export function useTimer(settings: AppSettings): UseTimerReturn {
   const [isRunning, setIsRunning] = useState(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const settingsRef = useRef(settings);
+  const prevSettingsRef = useRef({ workMinutes: settings.workMinutes, breakMinutes: settings.breakMinutes });
 
   // Keep settingsRef in sync
   useEffect(() => {
@@ -36,9 +37,15 @@ export function useTimer(settings: AppSettings): UseTimerReturn {
 
   // When settings change and timer is not running, reset to new duration
   useEffect(() => {
-    if (!isRunning) {
+    const settingsChanged =
+      prevSettingsRef.current.workMinutes !== settings.workMinutes ||
+      prevSettingsRef.current.breakMinutes !== settings.breakMinutes;
+
+    if (settingsChanged && !isRunning) {
       setTimeLeft(totalSeconds(mode));
     }
+
+    prevSettingsRef.current = { workMinutes: settings.workMinutes, breakMinutes: settings.breakMinutes };
   }, [settings.workMinutes, settings.breakMinutes, mode, isRunning, totalSeconds]);
 
   const clearTimer = useCallback(() => {
