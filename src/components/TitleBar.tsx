@@ -9,7 +9,7 @@ export function TitleBar({ onSettingsToggle, settingsOpen }: TitleBarProps) {
   const appWindow = getCurrentWindow();
 
   const handleMinimize = () => appWindow.minimize();
-  const handleClose = () => appWindow.hide();
+  const handleClose = () => appWindow.close();
 
   return (
     <div className="titlebar" data-tauri-drag-region>
@@ -34,7 +34,7 @@ export function TitleBar({ onSettingsToggle, settingsOpen }: TitleBarProps) {
         <button
           className="titlebar-btn close-btn"
           onClick={handleClose}
-          title="トレイに格納"
+          title="閉じる"
         >
           ×
         </button>
