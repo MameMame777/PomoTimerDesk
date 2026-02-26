@@ -30,7 +30,9 @@ pub fn run() {
             let menu = Menu::with_items(app, &[&show_item, &quit_item])?;
 
             // Build tray icon
+            let icon = app.default_window_icon().cloned().expect("no default icon");
             TrayIconBuilder::new()
+                .icon(icon)
                 .menu(&menu)
                 .tooltip("PomoTimer")
                 .on_menu_event(|app, event| match event.id.as_ref() {
