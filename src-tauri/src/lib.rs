@@ -53,7 +53,7 @@ fn append_to_daily_note(
         .map_err(|e| e.to_string())?;
 
     let label = if work_label.trim().is_empty() { "work" } else { work_label.trim() };
-    writeln!(file, "- [{}]: {}", label, time_str).map_err(|e| e.to_string())?;
+    writeln!(file, "- {}: {}", label, time_str).map_err(|e| e.to_string())?;
 
     Ok(())
 }
