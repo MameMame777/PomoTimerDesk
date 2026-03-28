@@ -8,9 +8,12 @@ interface TimerProps {
   mode: TimerMode;
   progress: number;
   isRunning: boolean;
+  obsidianEnabled: boolean;
+  obsidianWorkLabel: string;
+  onLabelChange: (label: string) => void;
 }
 
-export function Timer({ timeLeft, mode, progress, isRunning }: TimerProps) {
+export function Timer({ timeLeft, mode, progress, isRunning, obsidianEnabled, obsidianWorkLabel, onLabelChange }: TimerProps) {
   const minutes = Math.floor(timeLeft / 60);
   const seconds = timeLeft % 60;
   const timeStr = `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
@@ -120,6 +123,16 @@ export function Timer({ timeLeft, mode, progress, isRunning }: TimerProps) {
             <div className="timer-mode" style={{ color: modeColor }}>
               {modeLabel}
             </div>
+          )}
+          {obsidianEnabled && (
+            <input
+              type="text"
+              className="timer-label-input"
+              placeholder="work"
+              value={obsidianWorkLabel}
+              onChange={(e) => onLabelChange(e.target.value)}
+              title="Obsidian記録ラベル"
+            />
           )}
         </div>
       </div>

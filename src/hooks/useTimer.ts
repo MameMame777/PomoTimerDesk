@@ -1,4 +1,5 @@
 import { useState, useRef, useCallback, useEffect } from "react";
+import { invoke } from "@tauri-apps/api/core";
 import type { TimerMode, AppSettings } from "../utils/constants";
 import { playNotificationSound } from "../utils/audio";
 
@@ -24,13 +25,17 @@ export function useTimer(settings: AppSettings): UseTimerReturn {
   );
 
   const [mode, setMode] = useState<TimerMode>("work");
+  // Keep modeRef in sync with mode state
+  useEffect(() => { modeRef.current = mode; }, [mode]);
   const [timeLeft, setTimeLeft] = useState(() => totalSeconds("work"));
   const [isRunning, setIsRunning] = useState(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const settingsRef = useRef(settings);
+  const modeRef = useRef<TimerMode>("work");
+  const completedRef = useRef(false);
   const prevSettingsRef = useRef({ workMinutes: settings.workMinutes, breakMinutes: settings.breakMinutes });
 
-  // Keep settingsRef in sync
+  // Keep settingsRef and modeRef in sync
   useEffect(() => {
     settingsRef.current = settings;
   }, [settings]);
@@ -56,6 +61,7 @@ export function useTimer(settings: AppSettings): UseTimerReturn {
   }, []);
 
   const switchMode = useCallback(() => {
+    completedRef.current = false;
     const nextMode: TimerMode = mode === "work" ? "break" : "work";
     setMode(nextMode);
     setTimeLeft(totalSeconds(nextMode));
@@ -73,8 +79,22 @@ export function useTimer(settings: AppSettings): UseTimerReturn {
     intervalRef.current = setInterval(() => {
       setTimeLeft((prev) => {
         if (prev <= 1) {
-          // Timer completed
-          playNotificationSound(settingsRef.current);
+          // Timer completed — guard against StrictMode double-invocation
+          if (!completedRef.current) {
+            completedRef.current = true;
+            playNotificationSound(settingsRef.current);
+            // Append to Obsidian daily note if enabled
+            const s = settingsRef.current;
+            if (s.obsidianEnabled && s.obsidianVaultPath && modeRef.current === "work") {
+              invoke("append_to_daily_note", {
+                vaultPath: s.obsidianVaultPath,
+                dailyNotesFolder: s.obsidianDailyNotesFolder ?? null,
+                dateFormat: s.obsidianDateFormat,
+                folderStructure: s.obsidianFolderStructure,
+                workLabel: s.obsidianWorkLabel,
+              }).catch((e) => console.error("[Obsidian] append failed:", e));
+            }
+          }
           // Schedule mode switch
           setTimeout(() => switchMode(), 100);
           return 0;

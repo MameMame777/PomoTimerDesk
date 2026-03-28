@@ -59,6 +59,17 @@ export function Settings({ settings, onUpdate, onReset }: SettingsProps) {
     }
   };
 
+  const handleSelectVaultFolder = async () => {
+    const selected = await open({
+      directory: true,
+      multiple: false,
+      title: "Obsidian Vaultフォルダを選択",
+    });
+    if (selected && typeof selected === "string") {
+      onUpdate({ obsidianVaultPath: selected });
+    }
+  };
+
   return (
     <div className="settings-panel">
       <h3 className="settings-title">設定</h3>
@@ -182,6 +193,84 @@ export function Settings({ settings, onUpdate, onReset }: SettingsProps) {
             <span className="settings-value">{settings.bgOpacity}%</span>
           </div>
         </label>
+      </div>
+
+      {/* Obsidian integration */}
+      <div className="settings-section">
+        <label className="settings-label">
+          <span>Obsidian連携</span>
+          <div className="settings-input-row">
+            <input
+              type="checkbox"
+              checked={settings.obsidianEnabled}
+              onChange={(e) => onUpdate({ obsidianEnabled: e.target.checked })}
+            />
+            <span className="settings-value">
+              {settings.obsidianEnabled ? "有効" : "無効"}
+            </span>
+          </div>
+        </label>
+
+        {settings.obsidianEnabled && (
+          <div className="custom-sound-section">
+            <button className="folder-btn" onClick={handleSelectVaultFolder}>
+              📁 Vaultを選択
+            </button>
+            {settings.obsidianVaultPath && (
+              <div
+                className="folder-path"
+                title={settings.obsidianVaultPath}
+              >
+                {settings.obsidianVaultPath.split(/[/\\]/).pop()}
+              </div>
+            )}
+            <label className="settings-label" style={{ marginTop: "6px" }}>
+              Daily Notesフォルダ
+              <input
+                type="text"
+                className="text-input"
+                placeholder="例: Daily Notes（空欄=Vault直下）"
+                value={settings.obsidianDailyNotesFolder ?? ""}
+                onChange={(e) =>
+                  onUpdate({
+                    obsidianDailyNotesFolder: e.target.value || null,
+                  })
+                }
+              />
+            </label>
+            <label className="settings-label" style={{ marginTop: "6px" }}>
+              日付フォーマット
+              <select
+                className="sound-select"
+                value={settings.obsidianDateFormat}
+                onChange={(e) =>
+                  onUpdate({ obsidianDateFormat: e.target.value })
+                }
+              >
+                <option value="%Y-%m-%d">%Y-%m-%d（例: 2026-03-28）</option>
+                <option value="%Y%m%d">%Y%m%d（例: 20260328）</option>
+                <option value="%Y年%m月%d日">
+                  %Y年%m月%d日（例: 2026年03月28日）
+                </option>
+              </select>
+            </label>
+            <label className="settings-label" style={{ marginTop: "6px" }}>
+              フォルダ構成
+              <select
+                className="sound-select"
+                value={settings.obsidianFolderStructure}
+                onChange={(e) =>
+                  onUpdate({
+                    obsidianFolderStructure: e.target.value as "flat" | "year-month",
+                  })
+                }
+              >
+                <option value="flat">フラット（例: Daily Notes/2026-03-28.md）</option>
+                <option value="year-month">年/月（例: Daily Notes/2026/03/2026-03-28.md）</option>
+              </select>
+            </label>
+          </div>
+        )}
       </div>
 
       <div className="settings-footer">

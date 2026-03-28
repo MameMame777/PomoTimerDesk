@@ -47,6 +47,9 @@ export default function App() {
               mode={mode}
               progress={progress}
               isRunning={isRunning}
+              obsidianEnabled={settings.obsidianEnabled}
+              obsidianWorkLabel={settings.obsidianWorkLabel}
+              onLabelChange={(label) => updateSettings({ obsidianWorkLabel: label })}
             />
             <Controls
               isRunning={isRunning}

@@ -11,6 +11,13 @@ export interface AppSettings {
   customSoundFolder: string | null;
   selectedSoundFile: string | null;
   bgOpacity: number;
+  // Obsidian daily note integration
+  obsidianEnabled: boolean;
+  obsidianVaultPath: string | null;
+  obsidianDailyNotesFolder: string | null;
+  obsidianDateFormat: string;
+  obsidianFolderStructure: "flat" | "year-month";
+  obsidianWorkLabel: string;
 }
 
 /** Default settings */
@@ -23,6 +30,12 @@ export const DEFAULT_SETTINGS: AppSettings = {
   customSoundFolder: null,
   selectedSoundFile: null,
   bgOpacity: 88,
+  obsidianEnabled: false,
+  obsidianVaultPath: null,
+  obsidianDailyNotesFolder: null,
+  obsidianDateFormat: "%Y-%m-%d",
+  obsidianFolderStructure: "flat",
+  obsidianWorkLabel: "work",
 };
 
 /** Supported audio extensions */
