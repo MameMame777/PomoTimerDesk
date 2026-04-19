@@ -2,14 +2,25 @@ import { useState, useEffect } from "react";
 import { open } from "@tauri-apps/plugin-dialog";
 import type { AppSettings } from "../utils/constants";
 import { listAudioFiles, previewSound, previewDefaultSound } from "../utils/audio";
+import type { BgmState } from "../utils/bgm";
 
 interface SettingsProps {
   settings: AppSettings;
   onUpdate: (patch: Partial<AppSettings>) => void;
   onReset: () => void;
+  bgm: BgmState & {
+    play: (index?: number) => void;
+    pause: () => void;
+    stop: () => void;
+    next: () => void;
+    prev: () => void;
+    togglePlay: () => void;
+    setVolume: (vol: number) => void;
+    setLoopMode: (mode: "folder" | "single" | "shuffle") => void;
+  };
 }
 
-export function Settings({ settings, onUpdate, onReset }: SettingsProps) {
+export function Settings({ settings, onUpdate, onReset, bgm }: SettingsProps) {
   const [audioFiles, setAudioFiles] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -67,6 +78,18 @@ export function Settings({ settings, onUpdate, onReset }: SettingsProps) {
     });
     if (selected && typeof selected === "string") {
       onUpdate({ obsidianVaultPath: selected });
+    }
+  };
+
+  const handleSelectBgmFolder = async () => {
+    const selected = await open({
+      directory: true,
+      multiple: false,
+      title: "BGMフォルダを選択",
+    });
+    if (selected && typeof selected === "string") {
+      bgm.stop();
+      onUpdate({ bgmFolder: selected });
     }
   };
 
@@ -193,6 +216,76 @@ export function Settings({ settings, onUpdate, onReset }: SettingsProps) {
             <span className="settings-value">{settings.bgOpacity}%</span>
           </div>
         </label>
+      </div>
+
+      {/* BGM player */}
+      <div className="settings-section">
+        <label className="settings-label">BGM</label>
+        <button className="folder-btn" onClick={handleSelectBgmFolder}>
+          🎵 フォルダ選択
+        </button>
+        {settings.bgmFolder && (
+          <div className="folder-path" title={settings.bgmFolder}>
+            {settings.bgmFolder.split("\\").pop()}
+          </div>
+        )}
+        {bgm.files.length > 0 && (
+          <>
+            <select
+              className="sound-select"
+              value={bgm.currentFile || ""}
+              onChange={(e) => {
+                const idx = bgm.files.indexOf(e.target.value);
+                if (idx >= 0) bgm.play(idx);
+              }}
+            >
+              {bgm.files.map((file) => (
+                <option key={file} value={file}>
+                  {file}
+                </option>
+              ))}
+            </select>
+            <div className="bgm-controls">
+              <button className="bgm-btn" onClick={bgm.prev} title="前の曲">⏮</button>
+              <button className="bgm-btn bgm-btn-main" onClick={bgm.togglePlay} title={bgm.isPlaying ? "一時停止" : "再生"}>
+                {bgm.isPlaying ? "⏸" : "▶"}
+              </button>
+              <button className="bgm-btn" onClick={bgm.next} title="次の曲">⏭</button>
+              <button className="bgm-btn" onClick={bgm.stop} title="停止">⏹</button>
+            </div>
+            <div className="settings-input-row" style={{ marginTop: "4px" }}>
+              <span className="settings-label" style={{ marginBottom: 0, minWidth: "24px" }}>🔈</span>
+              <input
+                type="range"
+                min={0}
+                max={100}
+                value={settings.bgmVolume}
+                onChange={(e) => bgm.setVolume(Number(e.target.value))}
+              />
+              <span className="settings-value">{settings.bgmVolume}%</span>
+            </div>
+            <div className="sound-source-row" style={{ marginTop: "4px", marginBottom: 0 }}>
+              <button
+                className={`sound-source-btn ${settings.bgmLoop === "folder" ? "active" : ""}`}
+                onClick={() => bgm.setLoopMode("folder")}
+              >
+                🔁 全曲
+              </button>
+              <button
+                className={`sound-source-btn ${settings.bgmLoop === "single" ? "active" : ""}`}
+                onClick={() => bgm.setLoopMode("single")}
+              >
+                🔂 1曲
+              </button>
+              <button
+                className={`sound-source-btn ${settings.bgmLoop === "shuffle" ? "active" : ""}`}
+                onClick={() => bgm.setLoopMode("shuffle")}
+              >
+                🔀 シャッフル
+              </button>
+            </div>
+          </>
+        )}
       </div>
 
       {/* Obsidian integration */}

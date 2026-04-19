@@ -445,6 +445,73 @@ body {
 }
 
 /* ===== Scrollbar ===== */
+
+/* ===== BGM Controls (Settings) ===== */
+.bgm-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin-top: 6px;
+}
+
+.bgm-btn {
+  width: 26px;
+  height: 26px;
+  border: 1px solid var(--border-color);
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 11px;
+  cursor: pointer;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.bgm-btn:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.bgm-btn-main {
+  width: 30px;
+  height: 30px;
+  font-size: 12px;
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* ===== BGM Mini Controls (Timer view) ===== */
+.bgm-mini {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin-top: 2px;
+}
+
+.bgm-mini-btn {
+  width: 20px;
+  height: 20px;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 10px;
+  cursor: pointer;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.bgm-mini-btn:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+/* ===== Scrollbar ===== */
 ::-webkit-scrollbar {
   width: 4px;
 }

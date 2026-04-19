@@ -18,6 +18,10 @@ export interface AppSettings {
   obsidianDateFormat: string;
   obsidianFolderStructure: "flat" | "year-month";
   obsidianWorkLabel: string;
+  // BGM settings
+  bgmFolder: string | null;
+  bgmVolume: number;
+  bgmLoop: "folder" | "single" | "shuffle";
 }
 
 /** Default settings */
@@ -36,6 +40,9 @@ export const DEFAULT_SETTINGS: AppSettings = {
   obsidianDateFormat: "%Y-%m-%d",
   obsidianFolderStructure: "flat",
   obsidianWorkLabel: "work",
+  bgmFolder: null,
+  bgmVolume: 50,
+  bgmLoop: "folder",
 };
 
 /** Supported audio extensions */

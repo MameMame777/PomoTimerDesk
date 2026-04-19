@@ -113,7 +113,8 @@ export function Timer({ timeLeft, mode, progress, isRunning, obsidianEnabled, ob
             cx={dotX}
             cy={dotY}
             r="3"
-            fill="rgba(180,180,180,0.5)"
+            fill={modeColor}
+            fillOpacity="0.85"
             pointerEvents="none"
           />
         </svg>

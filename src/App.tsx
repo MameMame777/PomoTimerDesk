@@ -6,6 +6,7 @@ import { Controls } from "./components/Controls";
 import { Settings } from "./components/Settings";
 import { useSettings } from "./hooks/useSettings";
 import { useTimer } from "./hooks/useTimer";
+import { useBgm } from "./hooks/useBgm";
 import "./styles/global.css";
 
 const TIMER_SIZE = { width: 160, height: 220 };
@@ -16,6 +17,7 @@ export default function App() {
   const { settings, updateSettings, resetSettings } = useSettings();
   const { timeLeft, mode, isRunning, progress, start, pause, reset, skip } =
     useTimer(settings);
+  const bgm = useBgm(settings, updateSettings);
 
   useEffect(() => {
     const win = getCurrentWindow();
@@ -39,6 +41,7 @@ export default function App() {
             settings={settings}
             onUpdate={updateSettings}
             onReset={resetSettings}
+            bgm={bgm}
           />
         ) : (
           <>
@@ -58,6 +61,15 @@ export default function App() {
               onReset={reset}
               onSkip={skip}
             />
+            {bgm.files.length > 0 && (
+              <div className="bgm-mini">
+                <button className="bgm-mini-btn" onClick={bgm.prev} title="前の曲">⏮</button>
+                <button className="bgm-mini-btn" onClick={bgm.togglePlay} title={bgm.isPlaying ? "一時停止" : "再生"}>
+                  {bgm.isPlaying ? "⏸" : "♪"}
+                </button>
+                <button className="bgm-mini-btn" onClick={bgm.next} title="次の曲">⏭</button>
+              </div>
+            )}
           </>
         )}
       </main>
